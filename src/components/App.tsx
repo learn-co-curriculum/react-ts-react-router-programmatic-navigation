@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import About from "./About";
 import Login from "./Login";
 import Navbar from "./Navbar";
+import "../index.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
