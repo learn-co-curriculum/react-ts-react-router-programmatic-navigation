@@ -1,27 +1,30 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Login({ setIsLoggedIn }) {
-  const history = useHistory();
+interface Props {
+  setIsLoggedIn(isLoggedIn: boolean): void;
+}
+
+function Login({ setIsLoggedIn }: Props) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  function handleChange(e) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     setIsLoggedIn(true);
 
     // after logging the user in, redirect to the home page!
-    history.push("/");
+    navigate("/");
   }
 
   return (

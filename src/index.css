@@ -1,0 +1,12 @@
+.nav-link {
+  width: 100px;
+  padding: 12px;
+  margin: 0 6px 6px;
+  background-color: blue;
+  text-decoration: none;
+  color: white;
+}
+
+.active {
+  background: darkblue;
+}
