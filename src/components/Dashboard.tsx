@@ -1,13 +1,18 @@
-import { redirect } from "react-router-dom";
+import { useEffect } from "react";
+import { redirect, useNavigate } from "react-router-dom";
 
 interface Props {
   isLoggedIn: boolean;
 }
 
 function Dashboard({ isLoggedIn }: Props) {
-  if (!isLoggedIn) {
-    redirect("/login");
-  }
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  });
 
   return (
     <div>
