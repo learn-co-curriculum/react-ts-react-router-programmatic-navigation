@@ -3,8 +3,8 @@
 ## Learning Goals
 
 - Understand the use cases for programmatic navigation
-- Use the `useHistory` hook to perform programmatic navigation
-- Use the `<Redirect>` component to perform programmatic navigation
+- Use the `useNavigate` hook to perform programmatic navigation
+- Use the `redirect` method to perform programmatic navigation
 
 ## Introduction
 
@@ -13,7 +13,7 @@ navigate our React site: the `NavLink` and `Link` components. However, it would
 also be useful to direct our users to another page **without** them needing to
 click a link. For example:
 
-- After logging in to the website, direct our user to the home page
+- After logging in to the website, direct our user to the dashboard page
 - After logging out of the website, direct our user to the login page
 - After creating a new item by filling out a form, direct our user to the detail
   page for that item
@@ -32,22 +32,22 @@ recommend that you read through the lesson first, focusing on understanding how
 programmatic navigation works. Once you've done that, feel free to start up the
 app and explore a (mostly) working example.
 
-## The useHistory Hook
+## The useNavigate Hook
 
 To solve this problem, we can use another custom hook from React Router: the
-`useHistory` hook. Here's how it looks:
+`useNavigate` hook. Here's how it looks:
 
 ```jsx
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function NavBar({ onLogout }) {
-  const history = useHistory();
+function NavBar({ onLogout }: Props) {
+  const navigate = useNavigate();
 
   function handleClick() {
     // logout the user
     onLogout();
     // then navigate them to the login page
-    history.push("/login");
+    navigate("/login");
   }
 
   return (
@@ -58,28 +58,28 @@ function NavBar({ onLogout }) {
 }
 ```
 
-By calling `history.push()`, we can effectively navigate the user to a new page
-in response to **any** event in our application, not just when the user clicks a
-link!
+By calling `navigate()` and passing it a path, we can effectively navigate the
+user to a new page in response to **any** event in our application, not just
+when the user clicks a link!
 
-For another example, here's how you could use `history.push()` to redirect the
-user after logging in:
+For another example, here's how you could use `navigate()` to redirect the user
+after logging in:
 
 ```jsx
-function Login({ onLogin }) {
+function Login({ onLogin }: Props) {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  function handleChange(e) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     fetch("http://localhost:3001/login", {
       method: "POST",
@@ -92,7 +92,7 @@ function Login({ onLogin }) {
       .then((user) => {
         onLogin(user);
         // after logging the user in, redirect to the home page!
-        history.push("/home");
+        navigate("/home");
       });
   }
 
@@ -116,19 +116,24 @@ function Login({ onLogin }) {
 }
 ```
 
-## The Redirect Component
+## Navigate with useEffect
 
-In addition to the `useHistory` hook, React Router also provides a special
-component for redirecting users to a new location: the `Redirect` component.
-This component is particularly useful in cases where you need to handle some
-conditional rendering. For example:
+In cases where we need to handle some conditional rendering, `useNavigate` is
+also helpful when used in conjunction with the `useEffect` hook. For example:
 
 ```jsx
 function Home({ isSignedIn }) {
-  // if the user isn't signed in, redirect them to the login page
-  if (!isSignedIn) return <Redirect to="/login" />;
+  const navigate = useNavigate();
 
-  // otherwise, return the home page
+  // when this component loads, check if the user is signed in -
+  // if not, navigate them to the login page
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  });
+
+  // otherwise, render the home page
   return (
     <div>
       <h1>Home!</h1>
@@ -144,11 +149,10 @@ website. In general, the preferred approach is to use the `<Link>` and
 `<NavLink>` components to let users perform navigation by clicking links.
 However, there are certain scenarios when we want to navigate a user to a new
 page after they perform some other type of action, like submitting a form or
-logging out. React Router provides two tools to help us with these scenarios:
-the `useHistory` hook and the `<Redirect>` component.
+logging out. React Router provides a helpful tool to help us with these
+scenarios: the `useNavigate` hook.
 
 ## Resources
 
-- [React Router Hooks](https://v5.reactrouter.com/web/api/Hooks)
-- [React Router history object](https://v5.reactrouter.com/web/api/history)
-- [Redirect](https://v5.reactrouter.com/web/api/Redirect)
+- [React Router](https://reactrouter.com/en/main)
+- [useNavigate](https://reactrouter.com/en/main/hooks/use-navigate)
